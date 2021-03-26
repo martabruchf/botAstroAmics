@@ -11,6 +11,8 @@ from telebot import types
 from usuariAlta import *
 from dadesAltaUsuari import *
 from validarContrasenya import *
+from sqliteAstro import *
+import os
 
 # Per gestionar el fitxer config.ini
 import configparser
@@ -20,6 +22,7 @@ config.read('config.ini')
 
 # De config.ini importem la variable TOKEN
 TOKEN = config['telegram']["TOKEN"]
+nomBD = config['basedades']["nom"]
 # Creem el bot
 bot = telebot.TeleBot(TOKEN)
 
@@ -44,6 +47,17 @@ comandesAdmin = {
     'baixa'         : 'Per donar de baixa un usuari',
     'estadistiques' : 'Per veure les estadístiques'
 }
+
+# Comprovem si la base de dades existeix 
+# si no existeix creem la taula
+# os.remove(nomBD)
+if os.path.isfile(nomBD):
+    print("La base de dades ja existeix.")    
+else:    
+    con = sql_connection()
+    sql_table(con)
+    print("Taula creada.")
+
 
 # Comanda admin
 @bot.message_handler(commands=['admin'])

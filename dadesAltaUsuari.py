@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from usuariAlta import *
+from sqliteAstro import *
 
 # Funcions per guardar totes les dades per donar
 # d'alta a un usuari
@@ -10,9 +11,10 @@ element = UsuariAlta()
 def nomUsuari(m, bot, userEstatus):
     """
     Guardem el nom
-    """    
-    element.nom = m.text
+    """
     cid=m.chat.id
+    element.id = cid
+    element.nom = m.text
     missatge = "E-mail:"
     bot.send_message(cid, missatge)
     userEstatus[cid]="emailAlta"
@@ -56,7 +58,9 @@ def edatUsuari(m, bot, userEstatus):
     Guardem l'edat
     """
     element.edat = m.text
-    cid=m.chat.id    
-    bot.send_message(cid, element.nom)
-    
+    cid=m.chat.id
+    con = sql_connection()
+    sql_insert(con, element)
+    sql_selectAll(con)
+    con.close()
 
