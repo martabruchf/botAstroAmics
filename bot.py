@@ -8,6 +8,9 @@ import time
 
 import telebot
 from telebot import types
+from usuariAlta import *
+from dadesAltaUsuari import *
+from validarContrasenya import *
 
 # Per gestionar el fitxer config.ini
 import configparser
@@ -25,27 +28,16 @@ userEstatus = {}
 # Llista dels usuaris administradors
 llistaAdmin = list()
 
-
-class UsuariAlta:
-    """
-    Classe que conté les dades per donar d'alta un usuari
-    """
-    def __init__(self):
-        self.nom = None
-        self.mail = None
-        self.poblacio = None
-        self.telefon = None
-        self.edat = None
-
-
-comandesUsuari = {  # Descripció de les comandes per la comanda "help" de l'usuari normal
+# Descripció de les comandes per la comanda "help" de l'usuari normal
+comandesUsuari = {  
     'start'       : 'Per iniciar el bot',
     'help'        : 'Et diu quines comandes hi ha',
     'alta'        : 'Per donar d\'alta un usuari',
     'admin'       : 'Entrar la contrasenya d\'administrador'
 }
 
-comandesAdmin = { # Descripció de les comandes per la comanda "help" de l'usuari administrador
+# Descripció de les comandes per la comanda "help" de l'usuari administrador
+comandesAdmin = { 
     'start'         : 'Per iniciar el bot',
     'help'          : 'Et diu quines comandes hi ha',
     'alta'          : 'Per donar d\'alta un usuari',
@@ -63,6 +55,20 @@ def command_admin(m):
     missatge = "Entra la contrasenya d'Administrador:"
     bot.send_message(cid, missatge)
     userEstatus[cid]="contrasenya"
+
+
+# Comanda alta
+@bot.message_handler(commands=['alta'])
+def command_alta(m):
+    """
+    Demana les dades per donar-se d'alta
+    """
+    cid = m.chat.id
+    missatge = "Entra les dades per donar-te d'alta."
+    bot.send_message(cid, missatge)
+    missatge = "Nom i cognoms:"
+    bot.send_message(cid, missatge)
+    userEstatus[cid]="nomAlta"
 
 
 # Comanda help
@@ -87,6 +93,7 @@ def command_help(m):
 def send_welcome(message):
     msg = bot.reply_to(message, """\
 Hola! Benvingut/da al bot d'AstroAmics!
+Aquest bot és per donar-se d'alta al grup d'AstroAmics.
 Escriu /help per saber què pots fer.
 """)
 
@@ -99,19 +106,21 @@ def command_default(m):
     cid=m.chat.id
     if userEstatus[cid] == "contrasenya":
         validarContrasenya(m)
+    elif userEstatus[cid] == "nomAlta":
+        nomUsuari(m, bot, userEstatus)
+    elif userEstatus[cid] == "emailAlta":
+        mailUsuari(m, bot, userEstatus)
+    elif userEstatus[cid] == "poblacioAlta":
+        poblacioUsuari(m, bot, userEstatus)
+    elif userEstatus[cid] == "telAlta":
+        telUsuari(m, bot, userEstatus)
+    elif userEstatus[cid] == "edatAlta":
+        edatUsuari(m, bot, userEstatus)
 
 
-def validarContrasenya(m):
-    """
-    Validem si el password entrat és correcte.
-    Si és correcte s'afageix el id a la llista.
-    Si és incorrecte se l'avisa.
-    """
-    if m.text == config['main']["password"]:
-        llistaAdmin.append(m.chat.id)
-        bot.send_message(m.chat.id,  "Ara ets administrador.\nEscriu /help per veure què pots fer.")
-    else:
-        bot.send_message(m.chat.id, "Contrasenya incorrecta.")
+
+
+
 
 
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
