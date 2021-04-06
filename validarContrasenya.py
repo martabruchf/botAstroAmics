@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
-def validarContrasenya(m):
+# Per gestionar el fitxer config.ini
+import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+
+def validarContrasenya(m, llistaAdmin, bot):
     """
     Validem si el password entrat és correcte.
     Si és correcte s'afageix el id a la llista.

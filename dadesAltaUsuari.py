@@ -59,6 +59,8 @@ def edatUsuari(m, bot, userEstatus):
     """
     element.edat = m.text
     cid=m.chat.id
+    missatge = "L'alta ha estat tramitada.\nEn breu rebràs un mail de confirmació."
+    bot.send_message(cid, missatge)
     con = sql_connection()
     sql_insert(con, element)
     sql_selectAll(con)

@@ -119,7 +119,7 @@ def command_default(m):
     """
     cid=m.chat.id
     if userEstatus[cid] == "contrasenya":
-        validarContrasenya(m)
+        validarContrasenya(m, llistaAdmin, bot)
     elif userEstatus[cid] == "nomAlta":
         nomUsuari(m, bot, userEstatus)
     elif userEstatus[cid] == "emailAlta":
