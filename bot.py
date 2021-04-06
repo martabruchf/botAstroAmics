@@ -9,6 +9,7 @@ import time
 import telebot
 from telebot import types
 from usuariAlta import *
+from baixaUsuari import *
 from dadesAltaUsuari import *
 from validarContrasenya import *
 from sqliteAstro import *
@@ -85,6 +86,18 @@ def command_alta(m):
     userEstatus[cid]="nomAlta"
 
 
+# Comanda baixa
+@bot.message_handler(commands=['baixa'])
+def command_alta(m):
+    """
+    Demana les dades per donar un usuari de baixa
+    """
+    cid = m.chat.id
+    missatge = "Entra el nom de l'usuari a donar de baixa."
+    bot.send_message(cid, missatge)
+    userEstatus[cid]="nomBaixa"
+
+
 # Comanda help
 @bot.message_handler(commands=['help'])
 def command_help(m):
@@ -129,7 +142,9 @@ def command_default(m):
     elif userEstatus[cid] == "telAlta":
         telUsuari(m, bot, userEstatus)
     elif userEstatus[cid] == "edatAlta":
-        edatUsuari(m, bot, userEstatus)
+        edatUsuari(m, bot)
+    elif userEstatus[cid] == "nomBaixa":
+        nomUsuariBaixa(m, bot, userEstatus)
 
 
 

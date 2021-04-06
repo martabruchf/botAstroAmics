@@ -48,3 +48,17 @@ def sql_selectAll(con):
     rows = cur.fetchall()
     for row in rows:
         print(row)
+
+
+def sql_buscar(con, nom):
+    """
+    Funció que busca un usuari a la base de dades.
+    Busca els noms que comencen amb el nom passat. 
+    """
+    cur = con.cursor()
+    nomBuscar = nom + "*"
+    query = "SELECT * FROM usuaris WHERE nom LIKE ?;"
+    cur.execute(query, [ "%{}%".format(nom) ])
+    rows = cur.fetchall()
+    for row in rows:
+        print(row)

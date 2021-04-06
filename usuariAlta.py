@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class UsuariAlta:
+class Usuari:
     """
     Classe que conté les dades per donar d'alta un usuari
     """

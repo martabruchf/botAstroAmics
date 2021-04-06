@@ -6,7 +6,7 @@ from sqliteAstro import *
 # Funcions per guardar totes les dades per donar
 # d'alta a un usuari
 
-element = UsuariAlta()
+element = Usuari()
 
 def nomUsuari(m, bot, userEstatus):
     """
@@ -53,7 +53,7 @@ def telUsuari(m, bot, userEstatus):
     userEstatus[cid]="edatAlta"
 
 
-def edatUsuari(m, bot, userEstatus):
+def edatUsuari(m, bot):
     """
     Guardem l'edat
     """
