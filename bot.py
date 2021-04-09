@@ -25,12 +25,13 @@ config.read('config.ini')
 TOKEN = config['telegram']["TOKEN"]
 nomBD = config['basedades']["nom"]
 # Creem el bot
-bot = telebot.TeleBot(TOKEN)
+bot = telebot.TeleBot(TOKEN, num_threads=10)
 
 # Per guardar que espera cada usuari
 userEstatus = {}
 # Llista dels usuaris administradors
 llistaAdmin = list()
+llistaUsuarisBaixa = list()
 
 # Descripció de les comandes per la comanda "help" de l'usuari normal
 comandesUsuari = {  
@@ -98,6 +99,37 @@ def command_alta(m):
     userEstatus[cid]="nomBaixa"
 
 
+# Comanda estadistiques
+@bot.message_handler(commands=['estadistiques'])
+def command_estadistiques(m):
+    """
+    Mostra per pantalla les estadístiques dels usuaris
+    Primer mostra 2 botons per triar quina estadística vols
+    """
+    bot.send_message(m.chat.id, "Escull una opció:",
+                     reply_markup=mostraTeclat())
+
+
+def mostraTeclat():
+    """
+    Funció que crea el teclat
+    """
+    markup = types.InlineKeyboardMarkup()
+    markup.row_width = 2
+    markup.add(types.InlineKeyboardButton("Població", callback_data="bPoblacio"), types.InlineKeyboardButton("Edat", callback_data="bEdat"))
+    return markup
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback_query(call):
+    print("funció "+str(call))
+    opcio = call.data
+    if (opcio == "bPoblacio"):
+        pass
+    elif (opcio == "bEdat"):
+        pass
+
+
 # Comanda help
 @bot.message_handler(commands=['help'])
 def command_help(m):
@@ -131,6 +163,7 @@ def command_default(m):
     Funció que rep els missatges que no tenen la /
     """
     cid=m.chat.id
+    global llistaUsuarisBaixa
     if userEstatus[cid] == "contrasenya":
         validarContrasenya(m, llistaAdmin, bot)
     elif userEstatus[cid] == "nomAlta":
@@ -144,12 +177,14 @@ def command_default(m):
     elif userEstatus[cid] == "edatAlta":
         edatUsuari(m, bot)
     elif userEstatus[cid] == "nomBaixa":
-        nomUsuariBaixa(m, bot, userEstatus)
+       llistaUsuarisBaixa = nomUsuariBaixa(m, bot, userEstatus)
+    elif userEstatus[cid] == "numBaixa":
+        baixaUsuari(m, bot, cid, llistaUsuarisBaixa)
 
 
 
-
-
+# PER FER EL TECLAT
+#x = types.ReplyKeyboardMarkup([keyboard = ["a", "b", "c"], ["d", "e", "f"]])
 
 
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
@@ -162,3 +197,6 @@ bot.enable_save_next_step_handlers(delay=2)
 bot.load_next_step_handlers()
 
 bot.polling()
+
+
+

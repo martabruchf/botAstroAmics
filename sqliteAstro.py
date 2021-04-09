@@ -1,6 +1,7 @@
 import sqlite3
 import os
 from sqlite3 import Error
+from usuariAlta import *
 
 # Per gestionar el fitxer config.ini
 import configparser
@@ -41,9 +42,10 @@ def sql_insert(con, x):
 def sql_selectAll(con):
     """
     Funció que retorna tota la llista dels usuaris
+    que estan donats d'alta
     """
     cur = con.cursor()
-    query = "SELECT * FROM usuaris"
+    query = "SELECT * FROM usuaris WHERE alta = 's'"
     cur.execute(query)
     rows = cur.fetchall()
     for row in rows:
@@ -55,10 +57,30 @@ def sql_buscar(con, nom):
     Funció que busca un usuari a la base de dades.
     Busca els noms que comencen amb el nom passat. 
     """
-    cur = con.cursor()
-    nomBuscar = nom + "*"
-    query = "SELECT * FROM usuaris WHERE nom LIKE ?;"
+    cur = con.cursor()    
+    query = "SELECT * FROM usuaris WHERE nom LIKE ? and alta like 's';"
     cur.execute(query, [ "%{}%".format(nom) ])
     rows = cur.fetchall()
+    llista = list()
     for row in rows:
-        print(row)
+        element = Usuari()
+        element.id=row[0]
+        element.nom=row[1]
+        element.mail=row[2]
+        element.poblacio=row[3]
+        element.telefon=row[4]
+        element.edat=row[5]
+        element.alta=row[6]
+        llista.append(element)
+    return llista
+
+
+def sql_baixa(con, x):
+    """
+    Funció que dóna de baixa a un usuari.
+    Canvia el camp alta per 'n'
+    """
+    cur = con.cursor()
+    cur.execute("UPDATE usuaris SET alta = 'n' WHERE id like ? AND nom like ?", [x.id, x.nom])
+    con.commit()
+

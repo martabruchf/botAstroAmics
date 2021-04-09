@@ -11,3 +11,4 @@ class Usuari:
         self.poblacio = None
         self.telefon = None
         self.edat = None
+        self.alta= None
