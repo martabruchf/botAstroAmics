@@ -117,7 +117,6 @@ def mostraTeclat():
     markup = types.InlineKeyboardMarkup()
     markup.row_width = 2
     markup.add(types.InlineKeyboardButton("Població", callback_data="bPoblacio"), types.InlineKeyboardButton("Edat", callback_data="bEdat"))
-    #markup.add(types.InlineKeyboardButton("Edat", callback_data="bEdat"))
     return markup
 
 
