@@ -4,6 +4,7 @@
 This is a detailed example using almost every command of the API
 """
 
+from estadistiques import poblacio
 import time
 
 import telebot
@@ -12,6 +13,7 @@ from usuariAlta import *
 from baixaUsuari import *
 from dadesAltaUsuari import *
 from validarContrasenya import *
+from estadistiques import *
 from sqliteAstro import *
 import os
 
@@ -106,7 +108,7 @@ def command_estadistiques(m):
     Mostra per pantalla les estadístiques dels usuaris
     Primer mostra 2 botons per triar quina estadística vols
     """
-    bot.send_message(m.chat.id, "Escull una opció:",
+    bot.send_message(m.chat.id, "Escull quina estadística vols veure:",
                      reply_markup=mostraTeclat())
 
 
@@ -122,12 +124,16 @@ def mostraTeclat():
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
+    """
+    Funció que recull l'opció escollida del teclat estadística
+    """
     print("funció "+str(call))
     opcio = call.data
+    chat_id = call.from_user.id
     if (opcio == "bPoblacio"):
-        pass
+        poblacio(bot, chat_id)
     elif (opcio == "bEdat"):
-        pass
+        edat(bot, chat_id)
 
 
 # Comanda help

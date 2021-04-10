@@ -84,3 +84,28 @@ def sql_baixa(con, x):
     cur.execute("UPDATE usuaris SET alta = 'n' WHERE id like ? AND nom like ?", [x.id, x.nom])
     con.commit()
 
+
+def sql_poblacio(con):
+    """
+    Funció que cerca el total d'usuaris
+    que hi ha a cada població
+    """
+    cur = con.cursor()
+    cur.execute("SELECT DISTINCT poblacio, count(poblacio) FROM usuaris WHERE alta = 's' GROUP by poblacio")
+    rows = cur.fetchall()
+    llista = list()
+    for row in rows:
+        llista.append(row)
+    return llista
+
+
+def sql_edat(con, edat_min, edat_max):
+    """
+    Funció que cerca el total d'usuaris
+    que hi ha en una franja d'edat
+    """
+    cur = con.cursor()
+    cur.execute("SELECT count(edat) FROM usuaris WHERE edat >= ? and edat <= ?", [edat_min, edat_max])
+    rows = cur.fetchall()
+    row = rows[0]
+    return row
