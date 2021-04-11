@@ -71,6 +71,24 @@ con = sql_connection()
 llistaAdmin = sql_selectAllAdmin(con)
 con.close()
 
+# Creació dels teclats
+keyboardUsuari = types.ReplyKeyboardMarkup(True)
+keyboardUsuari.row('/alta', '/admin', '/help')
+keyboardAdmin = types.ReplyKeyboardMarkup(True)
+keyboardAdmin.row('/alta', '/admin', '/help')
+keyboardAdmin.row('/baixa', '/estadistiques')
+keyboardEsta = types.ReplyKeyboardMarkup(True)
+keyboardEsta.row('/poblacio', '/edat')
+
+
+# Comanda '/start'
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    cid = message.chat.id
+    msg = "Hola! Benvingut/da al bot d'AstroAmics! Aquest bot és per donar-se d'alta al grup d'AstroAmics."
+    bot.send_message(cid, msg, reply_markup=keyboardUsuari)
+
+
 # Comanda admin
 @bot.message_handler(commands=['admin'])
 def command_admin(m):
@@ -116,32 +134,60 @@ def command_estadistiques(m):
     Mostra per pantalla les estadístiques dels usuaris
     Primer mostra 2 botons per triar quina estadística vols
     """
-    bot.send_message(m.chat.id, "Escull quina estadística vols veure:",
-                     reply_markup=mostraTeclat())
+    #bot.send_message(m.chat.id, "Escull quina estadística vols veure:", reply_markup=mostraTeclat())
+    bot.send_message(m.chat.id, "Escull quina estadística vols veure:", reply_markup=keyboardEsta)
 
 
-def mostraTeclat():
-    """
-    Funció que crea el teclat
-    """
-    markup = types.InlineKeyboardMarkup()
-    markup.row_width = 2
-    markup.add(types.InlineKeyboardButton("Població", callback_data="bPoblacio"), types.InlineKeyboardButton("Edat", callback_data="bEdat"))
-    return markup
+# Comanda Poblacio
+@bot.message_handler(commands=['poblacio'])
+def command_estadistiques(m):
+    global llistaAdmin
+    cid = m.chat.id
+    poblacio(bot, cid)
+    admin = esAdmin(llistaAdmin, str(cid))
+    missatge = "Què més vols fer?"
+    if(admin == True):
+        bot.send_message(cid, missatge, reply_markup=keyboardAdmin)
+    else:
+        bot.send_message(cid, missatge, reply_markup=keyboardUsuari)
 
 
-@bot.callback_query_handler(func=lambda call: True)
-def callback_query(call):
-    """
-    Funció que recull l'opció escollida del teclat estadística
-    """
-    print("funció "+str(call))
-    opcio = call.data
-    chat_id = call.from_user.id
-    if (opcio == "bPoblacio"):
-        poblacio(bot, chat_id)
-    elif (opcio == "bEdat"):
-        edat(bot, chat_id)
+# Comanda Edat
+@bot.message_handler(commands=['edat'])
+def command_estadistiques(m):
+    global llistaAdmin
+    cid = m.chat.id
+    edat(bot, cid)
+    admin = esAdmin(llistaAdmin, str(cid))
+    missatge = "Què més vols fer?"
+    if(admin == True):
+        bot.send_message(cid, missatge, reply_markup=keyboardAdmin)
+    else:
+        bot.send_message(cid, missatge, reply_markup=keyboardUsuari)
+
+
+# def mostraTeclat():
+#     """
+#     Funció que crea el teclat
+#     """
+#     markup = types.InlineKeyboardMarkup()
+#     markup.row_width = 2
+#     markup.add(types.InlineKeyboardButton("Població", callback_data="bPoblacio"), types.InlineKeyboardButton("Edat", callback_data="bEdat"))
+#     return markup
+
+
+# @bot.callback_query_handler(func=lambda call: True)
+# def callback_query(call):
+#     """
+#     Funció que recull l'opció escollida del teclat estadística
+#     """
+#     print("funció "+str(call))
+#     opcio = call.data
+#     chat_id = call.from_user.id
+#     if (opcio == "bPoblacio"):
+#         poblacio(bot, chat_id)
+#     elif (opcio == "bEdat"):
+#         edat(bot, chat_id)
 
 
 # Comanda help
@@ -161,21 +207,6 @@ def command_help(m):
             help_text += "/" + key + ": "
             help_text += comandesUsuari[key] + "\n"
         bot.send_message(cid, help_text)  # send the generated help page
-
-
-keyboardUsuari = types.ReplyKeyboardMarkup(True)
-keyboardUsuari.row('/alta', '/admin', '/help')
-keyboardAdmin = types.ReplyKeyboardMarkup(True)
-keyboardAdmin.row('/alta', '/admin', '/help')
-keyboardAdmin.row('/baixa', '/estadistiques')
-
-
-# Comanda '/start'
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    cid = message.chat.id
-    msg = "Hola! Benvingut/da al bot d'AstroAmics! Aquest bot és per donar-se d'alta al grup d'AstroAmics."
-    bot.send_message(cid, msg, reply_markup=keyboardUsuari)
 
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
