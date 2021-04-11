@@ -21,12 +21,30 @@ def sql_connection():
         print(Error)
 
 
-def sql_table(con):
+def sql_tableUsuaris(con):
     """
-    Creem la taula
+    Creem la taula usuaris
     """
     cur = con.cursor()
     cur.execute("CREATE TABLE usuaris(id varchar(255), nom varchar(255), mail varchar(255), poblacio varchar(255), telefon varchar(255), edat integer, alta char(1))")
+    con.commit()
+
+
+def sql_tableAdmin(con):
+    """
+    Creem la taula admin
+    """
+    cur = con.cursor()
+    cur.execute("CREATE TABLE admin(id varchar(255))")
+    con.commit()
+
+
+def sql_insertAdmin(con, id):
+    """
+    Funció que inserta l'id de l'administrador
+    """
+    cur = con.cursor()
+    cur.execute("INSERT INTO admin(id) VALUES(?)", [id])
     con.commit()
 
 
@@ -38,6 +56,20 @@ def sql_insert(con, x):
     cur.execute("INSERT INTO usuaris(id, nom, mail, poblacio, telefon, edat, alta) VALUES(?, ?, ?, ?, ?, ?, ?)", [x.id, x.nom, x.mail, x.poblacio, x.telefon, x.edat, "s"])
     con.commit()
 
+
+def sql_selectAllAdmin(con):
+    """
+    Funció que recupera tota la llista d'administradors
+    """
+    cur = con.cursor()
+    query = "SELECT * FROM admin"
+    cur.execute(query)
+    rows = cur.fetchall()
+    llista = list()
+    for row in rows:
+        llista.append(row)
+    return llista
+    
 
 def sql_selectAll(con):
     """

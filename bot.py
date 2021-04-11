@@ -23,15 +23,16 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 
-# De config.ini importem la variable TOKEN
+# De config.ini importem les variables
 TOKEN = config['telegram']["TOKEN"]
 nomBD = config['basedades']["nom"]
+
 # Creem el bot
 bot = telebot.TeleBot(TOKEN, num_threads=10)
 
 # Per guardar que espera cada usuari
 userEstatus = {}
-# Llista dels usuaris administradors
+# Llistes
 llistaAdmin = list()
 llistaUsuarisBaixa = list()
 
@@ -56,12 +57,19 @@ comandesAdmin = {
 # si no existeix creem la taula
 # os.remove(nomBD)
 if os.path.isfile(nomBD):
-    print("La base de dades ja existeix.")    
+    print("La base de dades ja existeix.")
 else:    
     con = sql_connection()
-    sql_table(con)
-    print("Taula creada.")
+    sql_tableUsuaris(con)
+    print("Taula usuaris creada.")
+    sql_tableAdmin(con)
+    print("Taula administradors creada.")
 
+
+# Recuperem la llista d'administradors
+con = sql_connection()
+llistaAdmin = sql_selectAllAdmin(con)
+con.close()
 
 # Comanda admin
 @bot.message_handler(commands=['admin'])
@@ -139,9 +147,11 @@ def callback_query(call):
 # Comanda help
 @bot.message_handler(commands=['help'])
 def command_help(m):
-    cid = m.chat.id
-    help_text = "Pots utilitzar les següents comandes: \n"
-    if cid in llistaAdmin:
+    global llistaAdmin
+    cid = str(m.chat.id)
+    admin = esAdmin(llistaAdmin, cid)
+    help_text = "Pots utilitzar les següents comandes: \n"    
+    if admin:
         for key in comandesAdmin:  # generate help text out of the commands dictionary defined at the top
             help_text += "/" + key + ": "
             help_text += comandesAdmin[key] + "\n"
@@ -153,14 +163,19 @@ def command_help(m):
         bot.send_message(cid, help_text)  # send the generated help page
 
 
-# Handle '/start' and '/help'
+keyboardUsuari = types.ReplyKeyboardMarkup(True)
+keyboardUsuari.row('/alta', '/admin', '/help')
+keyboardAdmin = types.ReplyKeyboardMarkup(True)
+keyboardAdmin.row('/alta', '/admin', '/help')
+keyboardAdmin.row('/baixa', '/estadistiques')
+
+
+# Comanda '/start'
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    msg = bot.reply_to(message, """\
-Hola! Benvingut/da al bot d'AstroAmics!
-Aquest bot és per donar-se d'alta al grup d'AstroAmics.
-Escriu /help per saber què pots fer.
-""")
+    cid = message.chat.id
+    msg = "Hola! Benvingut/da al bot d'AstroAmics! Aquest bot és per donar-se d'alta al grup d'AstroAmics."
+    bot.send_message(cid, msg, reply_markup=keyboardUsuari)
 
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
@@ -170,8 +185,9 @@ def command_default(m):
     """
     cid=m.chat.id
     global llistaUsuarisBaixa
+    global llistaAdmin
     if userEstatus[cid] == "contrasenya":
-        validarContrasenya(m, llistaAdmin, bot)
+        llistaAdmin = validarContrasenya(m, llistaAdmin, bot, keyboardAdmin)
     elif userEstatus[cid] == "nomAlta":
         nomUsuari(m, bot, userEstatus)
     elif userEstatus[cid] == "emailAlta":
@@ -188,9 +204,6 @@ def command_default(m):
         baixaUsuari(m, bot, cid, llistaUsuarisBaixa)
 
 
-
-# PER FER EL TECLAT
-#x = types.ReplyKeyboardMarkup([keyboard = ["a", "b", "c"], ["d", "e", "f"]])
 
 
 # Enable saving next step handlers to file "./.handlers-saves/step.save".
