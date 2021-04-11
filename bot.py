@@ -152,15 +152,19 @@ def command_help(m):
             help_text += comandesUsuari[key] + "\n"
         bot.send_message(cid, help_text)  # send the generated help page
 
+keyboardUsuari = types.ReplyKeyboardMarkup(True)
+keyboardUsuari.row('/alta', '/admin', '/help')
+keyboardAdmin = types.ReplyKeyboardMarkup(True)
+keyboardAdmin.row('/alta', '/admin', '/help')
+keyboardAdmin.row('/baixa', '/estadistiques')
+
 
 # Handle '/start' and '/help'
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
-    msg = bot.reply_to(message, """\
-Hola! Benvingut/da al bot d'AstroAmics!
-Aquest bot és per donar-se d'alta al grup d'AstroAmics.
-Escriu /help per saber què pots fer.
-""")
+    cid = message.chat.id
+    msg = "Hola! Benvingut/da al bot d'AstroAmics! Aquest bot és per donar-se d'alta al grup d'AstroAmics."
+    bot.send_message(cid, msg, reply_markup=keyboardAdmin)
 
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
