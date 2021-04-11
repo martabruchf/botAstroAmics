@@ -36,18 +36,16 @@ userEstatus = {}
 llistaAdmin = list()
 llistaUsuarisBaixa = list()
 
-# Descripció de les comandes per la comanda "help" de l'usuari normal
-comandesUsuari = {  
-    'start'       : 'Per iniciar el bot',
-    'help'        : 'Et diu quines comandes hi ha',
+# Descripció de les comandes per l'ordre "help" de l'usuari normal
+comandesUsuari = {      
+    'help'        : 'Et diu quines ordres hi ha',
     'alta'        : 'Per donar d\'alta un usuari',
     'admin'       : 'Entrar la contrasenya d\'administrador'
 }
 
-# Descripció de les comandes per la comanda "help" de l'usuari administrador
+# Descripció de les comandes per l'ordre "help" de l'usuari administrador
 comandesAdmin = { 
-    'start'         : 'Per iniciar el bot',
-    'help'          : 'Et diu quines comandes hi ha',
+    'help'          : 'Et diu quines ordres hi ha',
     'alta'          : 'Per donar d\'alta un usuari',
     'baixa'         : 'Per donar de baixa un usuari',
     'estadistiques' : 'Per veure les estadístiques'
@@ -81,7 +79,7 @@ keyboardEsta = types.ReplyKeyboardMarkup(True)
 keyboardEsta.row('/poblacio', '/edat')
 
 
-# Comanda '/start'
+# Ordre '/start'
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     cid = message.chat.id
@@ -89,7 +87,7 @@ def send_welcome(message):
     bot.send_message(cid, msg, reply_markup=keyboardUsuari)
 
 
-# Comanda admin
+# Ordre admin
 @bot.message_handler(commands=['admin'])
 def command_admin(m):
     """
@@ -101,7 +99,7 @@ def command_admin(m):
     userEstatus[cid]="contrasenya"
 
 
-# Comanda alta
+# Ordre alta
 @bot.message_handler(commands=['alta'])
 def command_alta(m):
     """
@@ -115,7 +113,7 @@ def command_alta(m):
     userEstatus[cid]="nomAlta"
 
 
-# Comanda baixa
+# Ordre baixa
 @bot.message_handler(commands=['baixa'])
 def command_alta(m):
     """
@@ -127,7 +125,7 @@ def command_alta(m):
     userEstatus[cid]="nomBaixa"
 
 
-# Comanda estadistiques
+# Ordre estadistiques
 @bot.message_handler(commands=['estadistiques'])
 def command_estadistiques(m):
     """
@@ -138,7 +136,7 @@ def command_estadistiques(m):
     bot.send_message(m.chat.id, "Escull quina estadística vols veure:", reply_markup=keyboardEsta)
 
 
-# Comanda Poblacio
+# Ordre Poblacio
 @bot.message_handler(commands=['poblacio'])
 def command_estadistiques(m):
     global llistaAdmin
@@ -152,7 +150,7 @@ def command_estadistiques(m):
         bot.send_message(cid, missatge, reply_markup=keyboardUsuari)
 
 
-# Comanda Edat
+# Ordre Edat
 @bot.message_handler(commands=['edat'])
 def command_estadistiques(m):
     global llistaAdmin
@@ -190,13 +188,13 @@ def command_estadistiques(m):
 #         edat(bot, chat_id)
 
 
-# Comanda help
+# Ordre help
 @bot.message_handler(commands=['help'])
 def command_help(m):
     global llistaAdmin
     cid = str(m.chat.id)
     admin = esAdmin(llistaAdmin, cid)
-    help_text = "Pots utilitzar les següents comandes: \n"    
+    help_text = "Pots utilitzar les següents ordres: \n"    
     if admin:
         for key in comandesAdmin:  # generate help text out of the commands dictionary defined at the top
             help_text += "/" + key + ": "
