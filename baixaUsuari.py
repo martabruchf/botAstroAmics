@@ -29,11 +29,11 @@ def nomUsuariBaixa(m, bot, userEstatus):
         missatge = "Escriu el número de l'usuari a donar de baixa:"
         bot.send_message(cid, missatge)
         userEstatus[cid]="numBaixa"
-        con.close()
         return llistaUsuaris
     else:
         missatge = "No hi ha cap usuari amb aquest nom."
         bot.send_message(cid, missatge)
+    con.close()
 
 
 def baixaUsuari(m, bot, cid, llistaUsuarisBaixa):
