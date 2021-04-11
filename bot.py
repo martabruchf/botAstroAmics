@@ -181,7 +181,7 @@ def command_default(m):
     elif userEstatus[cid] == "telAlta":
         telUsuari(m, bot, userEstatus)
     elif userEstatus[cid] == "edatAlta":
-        edatUsuari(m, bot)
+        edatUsuari(m, bot, userEstatus)
     elif userEstatus[cid] == "nomBaixa":
        llistaUsuarisBaixa = nomUsuariBaixa(m, bot, userEstatus)
     elif userEstatus[cid] == "numBaixa":

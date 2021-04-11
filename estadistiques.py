@@ -49,6 +49,4 @@ def edat(bot, chat_id):
     total = sql_edat(con, 70, 120)
     missatge = "Més grans de 70 anys: " + str(total[0])
     bot.send_message(chat_id, missatge)
-    
-
     con.close()
