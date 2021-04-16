@@ -55,7 +55,7 @@ def baixaUsuari(m, bot, cid, llistaUsuarisBaixa):
     con.close()
 
 
-def baixa(cid, bot):
+def baixa(cid, bot, userEstatus):
     """
     Funció que dóna de baixa l'usuari actual
     """
@@ -70,10 +70,18 @@ def baixa(cid, bot):
         enviarMailAdmin(llista[0])
     else:
         # Si hi ha més d'un id, demanar nom i població i enviar mail a l'administrador
-        
-
-    
-    
-    
+        missatge = "Escriu el teu nom, cognoms i població:"
+        bot.send_message(cid, missatge)
+        userEstatus[cid]="dadesBaixa"
     con.close()
-    
+
+
+def dadesBaixa(m, bot, cid):
+    """
+    Continuació de la funció baixa.
+    Envia el mail a l'administrador perquè doni de baixa
+    a l'usuari.
+    """
+    enviarMailAdminBaixa(m)
+    missatge = "S'ha enviat un mail a l'administrador perque et doni de baixa.\nUn cop donat de baixa rebràs un mail."
+    bot.send_message(cid, missatge)

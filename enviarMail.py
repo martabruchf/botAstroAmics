@@ -79,3 +79,38 @@ def enviarMailAdmin(usuari):
     server.quit()
     
     print ("successfully sent email to %s:" % (msg['To']))
+
+
+def enviarMailAdminBaixa(m):
+    """
+    Envia un mail a l'administrador perquè doni de baixa
+    a un usuari.
+    """
+    # create message object instance
+    msg = MIMEMultipart()
+      
+    # setup the parameters of the message
+    password = config['mail']["password"]
+    msg['From'] = config['mail']["email"]
+    msg['To'] = config['mail']["email"]
+    msg['Subject'] = "Usuari per donar de baixa"
+    message = "El següent usuari es vol donar de baixa:\n" + m.text
+
+    # add in the message body
+    msg.attach(MIMEText(message, 'plain'))
+    
+    #create server
+    server = smtplib.SMTP('smtp.gmail.com: 587')
+    
+    server.starttls()
+    
+    # Login Credentials for sending the mail
+    server.login(msg['From'], password)
+    
+    
+    # send the message via the server.
+    server.sendmail(msg['From'], msg['To'], msg.as_string())
+    
+    server.quit()
+    
+    print ("successfully sent email to %s:" % (msg['To']))
