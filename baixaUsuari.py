@@ -2,6 +2,7 @@
 
 from usuariAlta import *
 from sqliteAstro import *
+from enviarMail import *
 
 # Funcions per guardar totes les dades per donar
 # de baixa a un usuari
@@ -47,6 +48,7 @@ def baixaUsuari(m, bot, cid, llistaUsuarisBaixa):
     con = sql_connection()
     sql_baixa(con, llistaUsuarisBaixa[idBaixa])
     missatge = "L'usuari ha estat donat de baixa."
+    enviarMail(llistaUsuarisBaixa[idBaixa].mail, "baixa")
     bot.send_message(cid, missatge)
     print("Llista usuaris actuals")
     sql_selectAll(con)

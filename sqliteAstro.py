@@ -137,7 +137,7 @@ def sql_edat(con, edat_min, edat_max):
     que hi ha en una franja d'edat
     """
     cur = con.cursor()
-    cur.execute("SELECT count(edat) FROM usuaris WHERE edat >= ? and edat <= ?", [edat_min, edat_max])
+    cur.execute("SELECT count(edat) FROM usuaris WHERE edat >= ? and edat <= ? and alta = 's'", [edat_min, edat_max])
     rows = cur.fetchall()
     row = rows[0]
     return row
