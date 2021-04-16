@@ -23,9 +23,44 @@ def enviarMail(mailDestinatari, tipus):
 
     # setup the parameters of the message
     password = config['mail']["password"]
-    msg['From'] = "bruchfigols@gmail.com"
+    msg['From'] = config['mail']["email"]
     msg['To'] = mailDestinatari    
     
+    # add in the message body
+    msg.attach(MIMEText(message, 'plain'))
+    
+    #create server
+    server = smtplib.SMTP('smtp.gmail.com: 587')
+    
+    server.starttls()
+    
+    # Login Credentials for sending the mail
+    server.login(msg['From'], password)
+    
+    
+    # send the message via the server.
+    server.sendmail(msg['From'], msg['To'], msg.as_string())
+    
+    server.quit()
+    
+    print ("successfully sent email to %s:" % (msg['To']))
+
+
+def enviarMailAdmin(usuari):
+    """
+    Envia un mail a l'administrador
+    informant-lo que un usuari s'ha donat de baixa.
+    """
+    # create message object instance
+    msg = MIMEMultipart()
+      
+    # setup the parameters of the message
+    password = config['mail']["password"]
+    msg['From'] = config['mail']["email"]
+    msg['To'] = config['mail']["email"]
+    msg['Subject'] = "Usuari donat de baixa"
+    message = "El següent usuari s'ha donat de baixa:\nID: " + usuari.id + " Nom: " + usuari.nom + " Població: " + usuari.poblacio
+
     # add in the message body
     msg.attach(MIMEText(message, 'plain'))
     

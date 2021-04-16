@@ -71,7 +71,8 @@ con.close()
 
 # Creació dels teclats
 keyboardUsuari = types.ReplyKeyboardMarkup(True)
-keyboardUsuari.row('/alta', '/admin', '/help')
+keyboardUsuari.row('/alta', '/baixa')
+keyboardUsuari.row('/admin', '/help')
 keyboardAdmin = types.ReplyKeyboardMarkup(True)
 keyboardAdmin.row('/alta', '/admin', '/help')
 keyboardAdmin.row('/baixa', '/estadistiques')
@@ -119,10 +120,15 @@ def command_alta(m):
     """
     Demana les dades per donar un usuari de baixa
     """
+    global llistaAdmin
     cid = m.chat.id
-    missatge = "Entra el nom de l'usuari a donar de baixa."
-    bot.send_message(cid, missatge)
-    userEstatus[cid]="nomBaixa"
+    admin = esAdmin(llistaAdmin, str(cid))
+    if(admin):
+        missatge = "Entra el nom de l'usuari a donar de baixa."
+        bot.send_message(cid, missatge)
+        userEstatus[cid]="nomBaixa"
+    else:
+        baixa(cid, bot)
 
 
 # Ordre estadistiques

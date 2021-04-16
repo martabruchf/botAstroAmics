@@ -48,8 +48,32 @@ def baixaUsuari(m, bot, cid, llistaUsuarisBaixa):
     con = sql_connection()
     sql_baixa(con, llistaUsuarisBaixa[idBaixa])
     missatge = "L'usuari ha estat donat de baixa."
-    enviarMail(llistaUsuarisBaixa[idBaixa].mail, "baixa")
     bot.send_message(cid, missatge)
+    enviarMail(llistaUsuarisBaixa[idBaixa].mail, "baixa")
     print("Llista usuaris actuals")
     sql_selectAll(con)
     con.close()
+
+
+def baixa(cid, bot):
+    """
+    Funció que dóna de baixa l'usuari actual
+    """
+    # Buscar si l'id està a la base de dades
+    con = sql_connection()
+    llista = sql_buscarID(con, cid)
+    # Comprovar que només hi hagi un id
+    if (len(llista) == 1):
+        sql_baixa(con, llista[0])
+        missatge = "La baixa s'ha fet amb èxit."
+        bot.send_message(cid, missatge)
+        enviarMailAdmin(llista[0])
+    else:
+        # Si hi ha més d'un id, demanar nom i població i enviar mail a l'administrador
+        
+
+    
+    
+    
+    con.close()
+    
