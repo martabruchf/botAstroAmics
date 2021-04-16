@@ -86,12 +86,33 @@ def sql_selectAll(con):
 
 def sql_buscar(con, nom):
     """
-    Funció que busca un usuari a la base de dades.
+    Funció que busca un usuari (pel nom) a la base de dades.
     Busca els noms que comencen amb el nom passat. 
     """
     cur = con.cursor()    
     query = "SELECT * FROM usuaris WHERE nom LIKE ? and alta like 's';"
     cur.execute(query, [ "%{}%".format(nom) ])
+    rows = cur.fetchall()
+    llista = list()
+    for row in rows:
+        element = Usuari()
+        element.id=row[0]
+        element.nom=row[1]
+        element.mail=row[2]
+        element.poblacio=row[3]
+        element.telefon=row[4]
+        element.edat=row[5]
+        element.alta=row[6]
+        llista.append(element)
+    return llista
+
+
+def sql_buscarID(con, id):
+    """
+    Funció que busca un usuari per l'id.
+    """
+    cur = con.cursor()
+    cur.execute("SELECT * FROM usuaris WHERE id LIKE ?", [id])
     rows = cur.fetchall()
     llista = list()
     for row in rows:
@@ -137,7 +158,7 @@ def sql_edat(con, edat_min, edat_max):
     que hi ha en una franja d'edat
     """
     cur = con.cursor()
-    cur.execute("SELECT count(edat) FROM usuaris WHERE edat >= ? and edat <= ?", [edat_min, edat_max])
+    cur.execute("SELECT count(edat) FROM usuaris WHERE edat >= ? and edat <= ? and alta = 's'", [edat_min, edat_max])
     rows = cur.fetchall()
     row = rows[0]
     return row

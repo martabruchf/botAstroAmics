@@ -2,6 +2,7 @@
 
 from usuariAlta import *
 from sqliteAstro import *
+from enviarMail import *
 
 # Funcions per guardar totes les dades per donar
 # de baixa a un usuari
@@ -48,6 +49,39 @@ def baixaUsuari(m, bot, cid, llistaUsuarisBaixa):
     sql_baixa(con, llistaUsuarisBaixa[idBaixa])
     missatge = "L'usuari ha estat donat de baixa."
     bot.send_message(cid, missatge)
+    enviarMail(llistaUsuarisBaixa[idBaixa].mail, "baixa")
     print("Llista usuaris actuals")
     sql_selectAll(con)
     con.close()
+
+
+def baixa(cid, bot, userEstatus):
+    """
+    Funció que dóna de baixa l'usuari actual
+    """
+    # Buscar si l'id està a la base de dades
+    con = sql_connection()
+    llista = sql_buscarID(con, cid)
+    # Comprovar que només hi hagi un id
+    if (len(llista) == 1):
+        sql_baixa(con, llista[0])
+        missatge = "La baixa s'ha fet amb èxit."
+        bot.send_message(cid, missatge)
+        enviarMailAdmin(llista[0])
+    else:
+        # Si hi ha més d'un id, demanar nom i població i enviar mail a l'administrador
+        missatge = "Escriu el teu nom, cognoms i població:"
+        bot.send_message(cid, missatge)
+        userEstatus[cid]="dadesBaixa"
+    con.close()
+
+
+def dadesBaixa(m, bot, cid):
+    """
+    Continuació de la funció baixa.
+    Envia el mail a l'administrador perquè doni de baixa
+    a l'usuari.
+    """
+    enviarMailAdminBaixa(m)
+    missatge = "S'ha enviat un mail a l'administrador perque et doni de baixa.\nUn cop donat de baixa rebràs un mail."
+    bot.send_message(cid, missatge)
