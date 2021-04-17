@@ -50,8 +50,6 @@ def baixaUsuari(m, bot, cid, llistaUsuarisBaixa):
     missatge = "L'usuari ha estat donat de baixa."
     bot.send_message(cid, missatge)
     enviarMail(llistaUsuarisBaixa[idBaixa].mail, "baixa")
-    print("Llista usuaris actuals")
-    sql_selectAll(con)
     con.close()
 
 
@@ -67,7 +65,7 @@ def baixa(cid, bot, userEstatus):
         sql_baixa(con, llista[0])
         missatge = "La baixa s'ha fet amb èxit."
         bot.send_message(cid, missatge)
-        enviarMailAdmin(llista[0])
+        enviarMailAdmin(llista[0], "baixa")
     else:
         # Si hi ha més d'un id, demanar nom i població i enviar mail a l'administrador
         missatge = "Escriu el teu nom, cognoms i població:"

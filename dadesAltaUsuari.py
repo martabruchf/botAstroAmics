@@ -78,7 +78,8 @@ def edatUsuari(m, bot, userEstatus):
             sql_insert(con, element)
             sql_selectAll(con)
             con.close()
-            enviarMail(element.mail, "alta")
+            enviarMail(element, "alta")
+            enviarMailAdmin(element, "alta")
         else:
             missatge = "Has d'entrar una edat vàlida.\nEdat:"
             bot.send_message(cid, missatge)
