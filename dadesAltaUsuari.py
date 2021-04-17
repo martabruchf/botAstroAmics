@@ -2,6 +2,7 @@
 
 from usuariAlta import *
 from sqliteAstro import *
+from enviarMail import *
 import re
 
 # Funcions per guardar totes les dades per donar
@@ -77,6 +78,7 @@ def edatUsuari(m, bot, userEstatus):
             sql_insert(con, element)
             sql_selectAll(con)
             con.close()
+            enviarMail(element.mail, "alta")
         else:
             missatge = "Has d'entrar una edat vàlida.\nEdat:"
             bot.send_message(cid, missatge)

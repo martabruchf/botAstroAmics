@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""
-This is a detailed example using almost every command of the API
-"""
-
-from estadistiques import poblacio
-import time
-
 import telebot
 from telebot import types
 from usuariAlta import *
@@ -14,14 +7,13 @@ from baixaUsuari import *
 from dadesAltaUsuari import *
 from validarContrasenya import *
 from estadistiques import *
+from crearPDF import *
 from sqliteAstro import *
 import os
-
 # Per gestionar el fitxer config.ini
 import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
-
 
 # De config.ini importem les variables
 TOKEN = config['telegram']["TOKEN"]
@@ -48,7 +40,8 @@ comandesAdmin = {
     'help'          : 'Et diu quines ordres hi ha',
     'alta'          : 'Per donar d\'alta un usuari',
     'baixa'         : 'Per donar de baixa un usuari',
-    'estadistiques' : 'Per veure les estadístiques'
+    'estadistiques' : 'Per veure les estadístiques',
+    'llistat'       : 'Crea un llistat en PDF de tots els membres donats d\'alta.'
 }
 
 # Comprovem si la base de dades existeix 
@@ -71,10 +64,11 @@ con.close()
 
 # Creació dels teclats
 keyboardUsuari = types.ReplyKeyboardMarkup(True)
-keyboardUsuari.row('/alta', '/admin', '/help')
+keyboardUsuari.row('/alta', '/baixa')
+keyboardUsuari.row('/admin', '/help')
 keyboardAdmin = types.ReplyKeyboardMarkup(True)
-keyboardAdmin.row('/alta', '/admin', '/help')
-keyboardAdmin.row('/baixa', '/estadistiques')
+keyboardAdmin.row('/alta', '/baixa', '/help')
+keyboardAdmin.row('/estadistiques', '/llistat')
 keyboardEsta = types.ReplyKeyboardMarkup(True)
 keyboardEsta.row('/poblacio', '/edat')
 
@@ -119,10 +113,15 @@ def command_alta(m):
     """
     Demana les dades per donar un usuari de baixa
     """
+    global llistaAdmin
     cid = m.chat.id
-    missatge = "Entra el nom de l'usuari a donar de baixa."
-    bot.send_message(cid, missatge)
-    userEstatus[cid]="nomBaixa"
+    admin = esAdmin(llistaAdmin, str(cid))
+    if(admin == True):
+        missatge = "Entra el nom de l'usuari a donar de baixa."
+        bot.send_message(cid, missatge)
+        userEstatus[cid]="nomBaixa"
+    else:
+        baixa(cid, bot, userEstatus)
 
 
 # Ordre estadistiques
@@ -139,29 +138,29 @@ def command_estadistiques(m):
 # Ordre Poblacio
 @bot.message_handler(commands=['poblacio'])
 def command_estadistiques(m):
-    global llistaAdmin
     cid = m.chat.id
     poblacio(bot, cid)
-    admin = esAdmin(llistaAdmin, str(cid))
     missatge = "Què més vols fer?"
-    if(admin == True):
-        bot.send_message(cid, missatge, reply_markup=keyboardAdmin)
-    else:
-        bot.send_message(cid, missatge, reply_markup=keyboardUsuari)
-
+    bot.send_message(cid, missatge, reply_markup=keyboardAdmin)
+    
 
 # Ordre Edat
 @bot.message_handler(commands=['edat'])
 def command_estadistiques(m):
-    global llistaAdmin
     cid = m.chat.id
-    edat(bot, cid)
-    admin = esAdmin(llistaAdmin, str(cid))
+    edat(bot, cid)    
     missatge = "Què més vols fer?"
-    if(admin == True):
-        bot.send_message(cid, missatge, reply_markup=keyboardAdmin)
-    else:
-        bot.send_message(cid, missatge, reply_markup=keyboardUsuari)
+    bot.send_message(cid, missatge, reply_markup=keyboardAdmin)
+    
+
+# Ordre llistat
+@bot.message_handler(commands=['llistat'])
+def command_llistat(m):
+    cid = m.chat.id
+    bot.send_message(cid, "S'està creant el PDF. En breu el rebràs.", reply_markup=keyboardAdmin)
+    crearPDF(cid)
+    doc = open('AstroAmics.pdf', 'rb')
+    bot.send_document(cid, doc)
 
 
 # def mostraTeclat():
@@ -195,16 +194,16 @@ def command_help(m):
     cid = str(m.chat.id)
     admin = esAdmin(llistaAdmin, cid)
     help_text = "Pots utilitzar les següents ordres: \n"    
-    if admin:
+    if (admin == True):
         for key in comandesAdmin:  # generate help text out of the commands dictionary defined at the top
             help_text += "/" + key + ": "
             help_text += comandesAdmin[key] + "\n"
-        bot.send_message(cid, help_text)  # send the generated help page
+        bot.send_message(m.chat.id, help_text, reply_markup=keyboardAdmin)  # send the generated help page
     else:
         for key in comandesUsuari:  # generate help text out of the commands dictionary defined at the top
             help_text += "/" + key + ": "
             help_text += comandesUsuari[key] + "\n"
-        bot.send_message(cid, help_text)  # send the generated help page
+        bot.send_message(m.chat.id, help_text, reply_markup=keyboardUsuari)  # send the generated help page
 
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
@@ -231,6 +230,9 @@ def command_default(m):
        llistaUsuarisBaixa = nomUsuariBaixa(m, bot, userEstatus)
     elif userEstatus[cid] == "numBaixa":
         baixaUsuari(m, bot, cid, llistaUsuarisBaixa)
+    elif userEstatus[cid] == "dadesBaixa":
+        dadesBaixa(m, bot, cid)
+        
 
 
 
@@ -245,6 +247,3 @@ bot.enable_save_next_step_handlers(delay=2)
 bot.load_next_step_handlers()
 
 bot.polling()
-
-
-

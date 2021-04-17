@@ -20,9 +20,20 @@ def validarContrasenya(m, llistaAdmin, bot, keyboardAdmin):
             con = sql_connection()
             sql_insertAdmin(con, m.chat.id)
             con.close()
-            llistaAdmin.append(m.chat.id)
+            llistaAdmin.append(cid)
+        # Esborrem el missatge que ha escrit l'usuari
+        # perquè no es pugui veure quina contrasenya
+        # ha posat.
+        try:
+            bot.delete_message(m.chat.id, m.message_id)
+        except:
+            pass
         bot.send_message(m.chat.id,  "Ara ets administrador.\nEscriu /help per veure què pots fer.", reply_markup=keyboardAdmin)
     else:
+        try:
+            bot.delete_message(m.chat.id, m.message_id)
+        except:
+            pass
         bot.send_message(m.chat.id, "Contrasenya incorrecta.")
     return llistaAdmin
 
@@ -32,8 +43,9 @@ def esAdmin(llistaAdmin, cid):
     Funció que comprova si el cid és administrador
     """
     esAdmin = False
-    for x in llistaAdmin:
-        id = x[0]
-        if (id == cid):
-            esAdmin = True
+    if (len(llistaAdmin) > 0):
+        for x in llistaAdmin:
+            id = str(x)
+            if (id == cid):
+                esAdmin = True
     return esAdmin
