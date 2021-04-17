@@ -45,7 +45,8 @@ def esAdmin(llistaAdmin, cid):
     esAdmin = False
     if (len(llistaAdmin) > 0):
         for x in llistaAdmin:
-            id = str(x)
+            idA = x
+            id = str(idA)
             if (id == cid):
                 esAdmin = True
     return esAdmin

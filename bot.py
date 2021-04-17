@@ -194,16 +194,16 @@ def command_help(m):
     cid = str(m.chat.id)
     admin = esAdmin(llistaAdmin, cid)
     help_text = "Pots utilitzar les següents ordres: \n"    
-    if admin:
+    if (admin == True):
         for key in comandesAdmin:  # generate help text out of the commands dictionary defined at the top
             help_text += "/" + key + ": "
             help_text += comandesAdmin[key] + "\n"
-        bot.send_message(cid, help_text)  # send the generated help page
+        bot.send_message(m.chat.id, help_text, reply_markup=keyboardAdmin)  # send the generated help page
     else:
         for key in comandesUsuari:  # generate help text out of the commands dictionary defined at the top
             help_text += "/" + key + ": "
             help_text += comandesUsuari[key] + "\n"
-        bot.send_message(cid, help_text)  # send the generated help page
+        bot.send_message(m.chat.id, help_text, reply_markup=keyboardUsuari)  # send the generated help page
 
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
