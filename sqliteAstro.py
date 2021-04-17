@@ -77,11 +77,21 @@ def sql_selectAll(con):
     que estan donats d'alta
     """
     cur = con.cursor()
-    query = "SELECT * FROM usuaris WHERE alta = 's'"
+    query = "SELECT * FROM usuaris WHERE alta = 's' ORDER BY nom"
     cur.execute(query)
     rows = cur.fetchall()
+    llista = list()
     for row in rows:
-        print(row)
+        element = Usuari()
+        element.id=row[0]
+        element.nom=row[1]
+        element.mail=row[2]
+        element.poblacio=row[3]
+        element.telefon=row[4]
+        element.edat=row[5]
+        element.alta=row[6]
+        llista.append(element)
+    return llista
 
 
 def sql_buscar(con, nom):
