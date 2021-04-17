@@ -67,7 +67,7 @@ def sql_selectAllAdmin(con):
     rows = cur.fetchall()
     llista = list()
     for row in rows:
-        llista.append(row)
+        llista.append(row[0])
     return llista
     
 
