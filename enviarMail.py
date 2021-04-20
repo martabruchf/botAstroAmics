@@ -10,75 +10,60 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 
-def enviarMail(mailDestinatari, tipus):
+def enviarMail(usuari, tipus):
+    mailDestinatari = usuari.mail
+    nomDestinatari = usuari.nom
     # create message object instance
-    msg = MIMEMultipart()
-    
+    msg = MIMEMultipart()    
     if(tipus == "alta"):
         msg['Subject'] = "Alta AstroAmics"
-        message = "T'has donat d'alta al Club AstroAmics.\nhttp://www.astroamics.tk"
+        message = "Benvolgut/da " + nomDestinatari + ",\n\nHas estat donat/da d'alta al Club d'AstroAmics.\nhttp://www.astroamics.tk"
     if(tipus == "baixa"):
         msg['Subject'] = "Baixa AstroAmics"
-        message = "T'has donat de baixa al Club AstroAmics.\nhttp://www.astroamics.tk"
-
+        message = "Benvolgut/da " + nomDestinatari + ",\n\nHas estat donat/da de baixa del Club d'AstroAmics.\nhttp://www.astroamics.tk"
     # setup the parameters of the message
     password = config['mail']["password"]
     msg['From'] = config['mail']["email"]
-    msg['To'] = mailDestinatari    
-    
+    msg['To'] = mailDestinatari 
     # add in the message body
-    msg.attach(MIMEText(message, 'plain'))
-    
+    msg.attach(MIMEText(message, 'plain'))    
     #create server
-    server = smtplib.SMTP('smtp.gmail.com: 587')
-    
-    server.starttls()
-    
+    server = smtplib.SMTP('smtp.gmail.com: 587')    
+    server.starttls()    
     # Login Credentials for sending the mail
     server.login(msg['From'], password)
-    
-    
     # send the message via the server.
     server.sendmail(msg['From'], msg['To'], msg.as_string())
-    
     server.quit()
-    
-    print ("successfully sent email to %s:" % (msg['To']))
 
 
-def enviarMailAdmin(usuari):
+def enviarMailAdmin(usuari, tipus):
     """
     Envia un mail a l'administrador
     informant-lo que un usuari s'ha donat de baixa.
     """
     # create message object instance
     msg = MIMEMultipart()
-      
+    if(tipus == "alta"):
+        msg['Subject'] = "Usuari donat d'alta"
+        message = "El següent usuari s'ha donat d'alta:\n\nID: " + str(usuari.id) + "\nNom: " + usuari.nom + "\nPoblació: " + usuari.poblacio + "\nE-mail: " + usuari.mail + "\nTelèfon: " + usuari.telefon + "\nEdat: " + str(usuari.edat)
+    if(tipus == "baixa"):
+        msg['Subject'] = "Usuari donat de baixa"
+        message = "El següent usuari s'ha donat de baixa:\n\nID: " + str(usuari.id) + "\nNom: " + usuari.nom + "\nPoblació: " + usuari.poblacio + "\nE-mail: " + usuari.mail + "\nTelèfon: " + usuari.telefon + "\nEdat: " + str(usuari.edat)
     # setup the parameters of the message
     password = config['mail']["password"]
     msg['From'] = config['mail']["email"]
     msg['To'] = config['mail']["email"]
-    msg['Subject'] = "Usuari donat de baixa"
-    message = "El següent usuari s'ha donat de baixa:\nID: " + usuari.id + " Nom: " + usuari.nom + " Població: " + usuari.poblacio
-
     # add in the message body
     msg.attach(MIMEText(message, 'plain'))
-    
     #create server
     server = smtplib.SMTP('smtp.gmail.com: 587')
-    
     server.starttls()
-    
     # Login Credentials for sending the mail
     server.login(msg['From'], password)
-    
-    
     # send the message via the server.
     server.sendmail(msg['From'], msg['To'], msg.as_string())
-    
     server.quit()
-    
-    print ("successfully sent email to %s:" % (msg['To']))
 
 
 def enviarMailAdminBaixa(m):
@@ -87,30 +72,20 @@ def enviarMailAdminBaixa(m):
     a un usuari.
     """
     # create message object instance
-    msg = MIMEMultipart()
-      
+    msg = MIMEMultipart()      
     # setup the parameters of the message
     password = config['mail']["password"]
     msg['From'] = config['mail']["email"]
     msg['To'] = config['mail']["email"]
     msg['Subject'] = "Usuari per donar de baixa"
     message = "El següent usuari es vol donar de baixa:\n" + m.text
-
     # add in the message body
-    msg.attach(MIMEText(message, 'plain'))
-    
+    msg.attach(MIMEText(message, 'plain'))    
     #create server
-    server = smtplib.SMTP('smtp.gmail.com: 587')
-    
-    server.starttls()
-    
+    server = smtplib.SMTP('smtp.gmail.com: 587')    
+    server.starttls()    
     # Login Credentials for sending the mail
     server.login(msg['From'], password)
-    
-    
     # send the message via the server.
-    server.sendmail(msg['From'], msg['To'], msg.as_string())
-    
+    server.sendmail(msg['From'], msg['To'], msg.as_string())    
     server.quit()
-    
-    print ("successfully sent email to %s:" % (msg['To']))
