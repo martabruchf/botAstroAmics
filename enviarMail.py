@@ -17,10 +17,10 @@ def enviarMail(usuari, tipus):
     msg = MIMEMultipart()    
     if(tipus == "alta"):
         msg['Subject'] = "Alta AstroAmics"
-        message = "Benvolgut/da " + nomDestinatari + ",\n\nHas estat donat d'alta al Club d'AstroAmics.\nhttp://www.astroamics.tk"
+        message = "Benvolgut/da " + nomDestinatari + ",\n\nHas estat donat/da d'alta al Club d'AstroAmics.\nhttp://www.astroamics.tk"
     if(tipus == "baixa"):
         msg['Subject'] = "Baixa AstroAmics"
-        message = "Benvolgut/da " + nomDestinatari + ",\n\nHas estat donat de baixa del Club d'AstroAmics.\nhttp://www.astroamics.tk"
+        message = "Benvolgut/da " + nomDestinatari + ",\n\nHas estat donat/da de baixa del Club d'AstroAmics.\nhttp://www.astroamics.tk"
     # setup the parameters of the message
     password = config['mail']["password"]
     msg['From'] = config['mail']["email"]

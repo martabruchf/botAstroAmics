@@ -49,7 +49,7 @@ def baixaUsuari(m, bot, cid, llistaUsuarisBaixa):
     sql_baixa(con, llistaUsuarisBaixa[idBaixa])
     missatge = "L'usuari ha estat donat de baixa."
     bot.send_message(cid, missatge)
-    enviarMail(llistaUsuarisBaixa[idBaixa].mail, "baixa")
+    enviarMail(llistaUsuarisBaixa[idBaixa], "baixa")
     con.close()
 
 
