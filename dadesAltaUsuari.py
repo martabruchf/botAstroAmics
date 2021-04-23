@@ -76,7 +76,6 @@ def edatUsuari(m, bot, userEstatus):
             bot.send_message(cid, missatge)
             con = sql_connection()
             sql_insert(con, element)
-            sql_selectAll(con)
             con.close()
             enviarMail(element, "alta")
             enviarMailAdmin(element, "alta")
