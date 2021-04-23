@@ -163,30 +163,6 @@ def command_llistat(m):
     bot.send_document(cid, doc)
 
 
-# def mostraTeclat():
-#     """
-#     Funció que crea el teclat
-#     """
-#     markup = types.InlineKeyboardMarkup()
-#     markup.row_width = 2
-#     markup.add(types.InlineKeyboardButton("Població", callback_data="bPoblacio"), types.InlineKeyboardButton("Edat", callback_data="bEdat"))
-#     return markup
-
-
-# @bot.callback_query_handler(func=lambda call: True)
-# def callback_query(call):
-#     """
-#     Funció que recull l'opció escollida del teclat estadística
-#     """
-#     print("funció "+str(call))
-#     opcio = call.data
-#     chat_id = call.from_user.id
-#     if (opcio == "bPoblacio"):
-#         poblacio(bot, chat_id)
-#     elif (opcio == "bEdat"):
-#         edat(bot, chat_id)
-
-
 # Ordre help
 @bot.message_handler(commands=['help'])
 def command_help(m):
@@ -247,3 +223,28 @@ bot.enable_save_next_step_handlers(delay=2)
 bot.load_next_step_handlers()
 
 bot.polling()
+
+
+
+# def mostraTeclat():
+#     """
+#     Funció que crea el teclat
+#     """
+#     markup = types.InlineKeyboardMarkup()
+#     markup.row_width = 2
+#     markup.add(types.InlineKeyboardButton("Població", callback_data="bPoblacio"), types.InlineKeyboardButton("Edat", callback_data="bEdat"))
+#     return markup
+
+
+# @bot.callback_query_handler(func=lambda call: True)
+# def callback_query(call):
+#     """
+#     Funció que recull l'opció escollida del teclat estadística
+#     """
+#     print("funció "+str(call))
+#     opcio = call.data
+#     chat_id = call.from_user.id
+#     if (opcio == "bPoblacio"):
+#         poblacio(bot, chat_id)
+#     elif (opcio == "bEdat"):
+#         edat(bot, chat_id)

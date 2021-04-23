@@ -80,6 +80,6 @@ def dadesBaixa(m, bot, cid):
     Envia el mail a l'administrador perquè doni de baixa
     a l'usuari.
     """
-    enviarMailAdminBaixa(m)
     missatge = "S'ha enviat un mail a l'administrador perque et doni de baixa.\nUn cop donat de baixa rebràs un mail."
     bot.send_message(cid, missatge)
+    enviarMailAdminBaixa(m)
