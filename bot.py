@@ -32,6 +32,7 @@ llistaUsuarisBaixa = list()
 comandesUsuari = {      
     'help'        : 'Et diu quines ordres hi ha',
     'alta'        : 'Per donar d\'alta un usuari',
+    'baixa'       : 'Per donar-se de baixa',
     'admin'       : 'Entrar la contrasenya d\'administrador'
 }
 
